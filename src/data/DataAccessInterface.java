@@ -14,10 +14,6 @@ public interface DataAccessInterface {
 
     List<Movie> searchMovies(String search);
 
-    Movie getMovie(UUID id);
-
-    Movie getMovie(String name);
-
     void insertMovie(Movie movie);
 
     void deleteMovie(Movie movie);

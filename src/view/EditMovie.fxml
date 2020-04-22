@@ -7,7 +7,7 @@
 
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="393.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditMovieController">
         <children>
-            <GridPane layoutX="-1.0" layoutY="32.0" prefHeight="347.0" prefWidth="565.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-27.0" AnchorPane.topAnchor="0.0">
+            <GridPane fx:id="gridPane" layoutX="-1.0" layoutY="32.0" prefHeight="347.0" prefWidth="565.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-27.0" AnchorPane.topAnchor="0.0">
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
                 </columnConstraints>
@@ -49,8 +49,7 @@
                            </light>
                         </Lighting>
                      </effect></Button>
-                  <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" prefHeight="40.0" prefWidth="82.0" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <Button mnemonicParsing="false" text="Delete" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteMovie" text="Delete" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <effect>
                         <Lighting bumpInput="$null" diffuseConstant="2.0" specularConstant="0.0" specularExponent="0.0" surfaceScale="0.0">
                            <light>

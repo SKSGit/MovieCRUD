@@ -102,22 +102,23 @@ public class Controller implements Initializable {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                     if (mouseEvent.getClickCount() == 2) {
 
-                        Movie item = listViewImages.getSelectionModel()
+                        Movie selectedMovie = listViewImages.getSelectionModel()
                                 .getSelectedItem();
-                        if (item != null) {
+                        if (selectedMovie != null) {
 
                             FXMLLoader loader = new FXMLLoader();
-                            loader.setLocation(this.getClass().getResource("/view/EditMovie.fxml")); //loading new plain fxml gridpane
+                            loader.setLocation(this.getClass().getResource("/view/EditMovie.fxml")); //loading plain fxml file gridpane
 
                             try {
                                 Parent parent = loader.load();
                                 EditMovieController thisMovieController = loader.getController(); //load specific controller from that specific fxml
-                                Tab movieTab = new Tab(item.getTitle()); //create tab
+                                Tab movieTab = new Tab(selectedMovie.getTitle()); //create tab
                                 movieTab.setContent(parent); //set fxml to the tab
 
-                                thisMovieController.insertTitleField.setText(item.getTitle());
-                                thisMovieController.insertYearField.setText(Integer.toString(item.getYear()));
-                                thisMovieController.insertPosterField.setText(item.getPosterUrl());
+                                thisMovieController.movie = selectedMovie;
+                                thisMovieController.insertTitleField.setText(selectedMovie.getTitle());
+                                thisMovieController.insertYearField.setText(Integer.toString(selectedMovie.getYear()));
+                                thisMovieController.insertPosterField.setText(selectedMovie.getPosterUrl());
 
                                 tabPane.getTabs().add(movieTab); //add tab to the original fxml tabpane
                                 tabPane.getSelectionModel()

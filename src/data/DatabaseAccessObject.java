@@ -48,6 +48,7 @@ public class DatabaseAccessObject implements DataAccessInterface {
 
             while (rs.next()) {
                 temp = new Movie(rs.getString("title"), rs.getInt("release_year"));
+                temp.setId(rs.getObject("id", java.util.UUID.class)); //VERY IMPORTANT to set id. so it matches the one in database
                 temp.setPoster(rs.getString("poster"));
                 matchingMovies.add(temp);
             }
@@ -55,58 +56,6 @@ public class DatabaseAccessObject implements DataAccessInterface {
             e.printStackTrace();
         }
         return matchingMovies;
-    }
-
-    @Override
-    public Movie getMovie(UUID id) {
-        String SQL = "SELECT id,title,release_year "
-                + "FROM movies "
-                + "WHERE id = ?";
-        Movie gottenMovie;
-
-        try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
-
-            pstmt.setObject(1, id);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                gottenMovie = new Movie(rs.getString("title"), rs.getInt("release_year"));
-                gottenMovie.setPoster(rs.getString("poster"));
-                return gottenMovie;
-            }
-
-        } catch (SQLException | IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-
-        return null;
-    }
-
-    @Override
-    public Movie getMovie(String name) {
-        String SQL = "SELECT id,title,release_year "
-                + "FROM movies "
-                + "WHERE title = ?";
-
-        Movie gottenMovie;
-
-        try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
-
-            pstmt.setObject(1, name);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                gottenMovie = new Movie(rs.getString("title"), rs.getInt("release_year"));
-                gottenMovie.setPoster(rs.getString("poster"));
-                return gottenMovie;
-            }
-
-        } catch (SQLException | IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-        return null;
     }
 
     @Override
@@ -130,7 +79,6 @@ public class DatabaseAccessObject implements DataAccessInterface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
 
         //Since title doesnt exist in db we insert
         String SQL2 = "INSERT INTO movies(title, id, release_year, poster)"
@@ -159,14 +107,44 @@ public class DatabaseAccessObject implements DataAccessInterface {
 
     @Override
     public void deleteMovie(Movie movie) {
+        String SQL = "DELETE FROM movies WHERE id = "+'\''+movie.getId()+'\'';
 
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+            pstmt.execute();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void updateMovie(Movie movie) {
+        //anything that is not a number) need to be enclosed in single quotes
+        //https://dba.stackexchange.com/a/128432
+        //https://salesforce.stackexchange.com/a/108669
+        String SQL = "UPDATE movies SET title = ?, release_year = ?, poster = ? WHERE id = "+'\''+movie.getId()+'\'';
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+
+            //movie = new Movie(movie.getTitle(), movie.getYear());
+            //movie.setPoster(posterUrl);
+
+            pstmt.setString(1, movie.getTitle());
+            pstmt.setInt(2, movie.getYear());
+            pstmt.setString(3, movie.getPosterUrl());
+
+
+            pstmt.execute();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
-
 
     public int getMovieCount() {
         String SQL = "SELECT count(*) FROM movies";
@@ -184,28 +162,57 @@ public class DatabaseAccessObject implements DataAccessInterface {
         return count;
     }
 
-    public void findTitleByID(UUID titleID) {
+    public Movie getMovie(UUID id) {
         String SQL = "SELECT id,title,release_year "
                 + "FROM movies "
                 + "WHERE id = ?";
+        Movie gottenMovie;
 
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL)) {
 
-            pstmt.setObject(1, titleID);
+            pstmt.setObject(1, id);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                System.out.println(rs.getString("title") + "\t"
-                        + rs.getString("id") + "\t");
+                gottenMovie = new Movie(rs.getString("title"), rs.getInt("release_year"));
+                gottenMovie.setPoster(rs.getString("poster"));
+                gottenMovie.setId(rs.getObject("id", java.util.UUID.class)); //VERY IMPORTANT to set id. so it matches the one in database
+                return gottenMovie;
             }
 
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             System.out.println(ex.getMessage());
         }
+
+        return null;
     }
 
+    public Movie getMovie(String name) {
+        String SQL = "SELECT id,title,release_year "
+                + "FROM movies "
+                + "WHERE title = ?";
 
+        Movie gottenMovie;
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+
+            pstmt.setObject(1, name);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                gottenMovie = new Movie(rs.getString("title"), rs.getInt("release_year"));
+                gottenMovie.setPoster(rs.getString("poster"));
+                gottenMovie.setId(rs.getObject("id", java.util.UUID.class));//VERY IMPORTANT to set id. so it matches the one in database
+                return gottenMovie;
+            }
+
+        } catch (SQLException | IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
 
     /**
      * DANGEROUS. THIS QUERY DOES NOT CHECK IF TITLE ALREADY EXISTS BEFORE INSERTING.
