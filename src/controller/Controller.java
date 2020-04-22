@@ -8,15 +8,14 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import data.DatabaseAccessObject;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import model.Movie;
 
 import java.awt.image.BufferedImage;
@@ -26,6 +25,8 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
+    @FXML
+    TabPane tabPane;
     @FXML
     Label resultsLabel;
     @FXML
@@ -38,6 +39,7 @@ public class Controller implements Initializable {
     TextField insertPosterField;
     @FXML
     ListView<Movie> listViewImages;
+
 
     DataAccessInterface dao = new DatabaseAccessObject();
     ObservableList<Movie> listMovie;
@@ -74,11 +76,11 @@ public class Controller implements Initializable {
     }
 
     private void makeCells() {
-        listViewImages.setCellFactory(l -> new ListCell<Movie>() {
+        listViewImages.setCellFactory(l -> new ListCell<Movie>() { //factory for adding cell for each movie
             private ImageView imageView = new ImageView();
 
             @Override
-            public void updateItem(Movie movie, boolean empty) {
+            public void updateItem(Movie movie, boolean empty) { //individual cell updates with movie
                 super.updateItem(movie, empty);
                 if (empty) {
                     setText(null);
@@ -94,7 +96,7 @@ public class Controller implements Initializable {
 
         });
 
-        listViewImages.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        listViewImages.setOnMouseClicked(new EventHandler<MouseEvent>() { //If cell is clicked. Open new tab and send that movies info to new controller
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
@@ -103,15 +105,27 @@ public class Controller implements Initializable {
                         Movie item = listViewImages.getSelectionModel()
                                 .getSelectedItem();
                         if (item != null) {
-                            StackPane pane = new StackPane();
-                            Scene scene = new Scene(pane);
-                            Stage stage = new Stage();
-                            stage.setScene(scene);
 
-                            pane.getChildren().add(
-                                    new TextField(item.getTitle()));
+                            FXMLLoader loader = new FXMLLoader();
+                            loader.setLocation(this.getClass().getResource("/view/EditMovie.fxml")); //loading new plain fxml gridpane
 
-                            stage.show();
+                            try {
+                                Parent parent = loader.load();
+                                EditMovieController thisMovieController = loader.getController(); //load specific controller from that specific fxml
+                                Tab movieTab = new Tab(item.getTitle()); //create tab
+                                movieTab.setContent(parent); //set fxml to the tab
+
+                                thisMovieController.insertTitleField.setText(item.getTitle());
+                                thisMovieController.insertYearField.setText(Integer.toString(item.getYear()));
+                                thisMovieController.insertPosterField.setText(item.getPosterUrl());
+
+                                tabPane.getTabs().add(movieTab); //add tab to the original fxml tabpane
+                                tabPane.getSelectionModel()
+                                        .selectLast(); //focus on the new tab
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
                         }
                     }
@@ -120,6 +134,7 @@ public class Controller implements Initializable {
         });
 
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

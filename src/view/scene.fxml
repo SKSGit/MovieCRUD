@@ -4,9 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane prefHeight="507.0" prefWidth="677.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<TabPane fx:id="tabPane" prefHeight="507.0" prefWidth="677.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <tabs>
-      <Tab text="Search Title">
+      <Tab closable="false" text="Search Title">
          <content>
             <GridPane alignment="center" hgap="10" prefHeight="351.0" prefWidth="564.0" vgap="10">
                <columnConstraints>
@@ -34,7 +34,7 @@
             </GridPane>
          </content>
       </Tab>
-      <Tab text="Insert Title">
+      <Tab closable="false" text="Insert Title">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
