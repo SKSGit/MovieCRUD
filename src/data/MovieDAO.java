@@ -2,7 +2,6 @@ package data;
 
 import model.Movie;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -13,7 +12,7 @@ import java.net.URLEncoder;
 import java.sql.*;
 import java.util.*;
 
-public class DatabaseAccessObject implements DataAccessInterface {
+public class MovieDAO implements MovieAccessInterface {
     private final String url = "jdbc:postgresql://localhost/postgres"; //ideally database name should not be "postgres at the end"
     private final String user = "dev";
     private final String password = "hello";

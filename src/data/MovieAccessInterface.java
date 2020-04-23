@@ -1,16 +1,17 @@
 package data;
 
 import model.Movie;
+import model.Person;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
 
-public interface DataAccessInterface {
+public interface MovieAccessInterface {
     //int CHANGE_TITLE = 1;
     //int CHANGE_YEAR = 2;
-    public Connection connect();
+    Connection connect();
 
     List<Movie> searchMovies(String search);
 

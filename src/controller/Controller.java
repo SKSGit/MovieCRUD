@@ -1,7 +1,9 @@
 package controller;
 
 
-import data.DataAccessInterface;
+import data.MovieAccessInterface;
+import data.PersonAccessInterface;
+import data.PersonDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -13,14 +15,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import data.DatabaseAccessObject;
+import data.MovieDAO;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import model.Movie;
+import model.Person;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -41,7 +45,8 @@ public class Controller implements Initializable {
     ListView<Movie> listViewImages;
 
 
-    DataAccessInterface dao = new DatabaseAccessObject();
+    MovieAccessInterface dao = new MovieDAO();
+    PersonAccessInterface daoPerson = new PersonDAO();
     ObservableList<Movie> listMovie;
     Movie movie;
 
@@ -80,7 +85,7 @@ public class Controller implements Initializable {
             private ImageView imageView = new ImageView();
 
             @Override
-            public void updateItem(Movie movie, boolean empty) { //individual cell updates with movie
+            public void updateItem(Movie movie, boolean empty) { //individual cell updates when being shown in GUI. If You scroll down this will fire again.
                 super.updateItem(movie, empty);
                 if (empty) {
                     setText(null);
@@ -96,7 +101,7 @@ public class Controller implements Initializable {
 
         });
 
-        listViewImages.setOnMouseClicked(new EventHandler<MouseEvent>() { //If cell is clicked. Open new tab and send that movies info to new controller
+        listViewImages.setOnMouseClicked(new EventHandler<MouseEvent>() { //If cell is clicked. Open new tab and send that movie to the other controller
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
@@ -104,6 +109,7 @@ public class Controller implements Initializable {
 
                         Movie selectedMovie = listViewImages.getSelectionModel()
                                 .getSelectedItem();
+                        ArrayList<Person> cast = (ArrayList<Person>) daoPerson.selectPersonsFromMovie(selectedMovie);
                         if (selectedMovie != null) {
 
                             FXMLLoader loader = new FXMLLoader();
@@ -115,12 +121,12 @@ public class Controller implements Initializable {
                                 Tab movieTab = new Tab(selectedMovie.getTitle()); //create tab
                                 movieTab.setContent(parent); //set fxml to the tab
 
-                                thisMovieController.movie = selectedMovie;
-                                thisMovieController.insertTitleField.setText(selectedMovie.getTitle());
-                                thisMovieController.insertYearField.setText(Integer.toString(selectedMovie.getYear()));
-                                thisMovieController.insertPosterField.setText(selectedMovie.getPosterUrl());
+                                //Passing values to other controller
+                                thisMovieController.setLabel(cast);
+                                thisMovieController.setMovie(selectedMovie);
 
                                 tabPane.getTabs().add(movieTab); //add tab to the original fxml tabpane
+                                thisMovieController.tabPane = tabPane;
                                 tabPane.getSelectionModel()
                                         .selectLast(); //focus on the new tab
 
@@ -135,7 +141,6 @@ public class Controller implements Initializable {
         });
 
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
