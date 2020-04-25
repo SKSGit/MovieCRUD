@@ -4,17 +4,26 @@ import java.util.Date;
 import java.util.UUID;
 
 public class Person {
-    UUID id;
-    String name;
-    Date birthday;
-    String birthplace;
-    String profession;
+    private UUID id;
+    private String name;
+    private Date birthday;
+    private String birthplace;
+    private String profession;
+    private Role role;
 
     public Person(UUID id, String name, Date birthday, String birthplace) {
         this.id = id;
         this.name = name;
         this.birthday = birthday;
         this.birthplace = birthplace;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public Person(UUID id, String name) {
@@ -48,9 +57,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{" +
-                "name='" + name + '\'' +
-                '}';
+        return name;
     }
 
     public Date getBirthday() {

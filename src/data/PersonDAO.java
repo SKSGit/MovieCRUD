@@ -2,6 +2,7 @@ package data;
 
 import model.Movie;
 import model.Person;
+import model.Role;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class PersonDAO implements PersonAccessInterface {
     private final String password = "hello";
 
     List<Person> personsFromMovie;
+    StringBuilder sb;
 
     @Override
     public Connection connect() {
@@ -31,7 +33,7 @@ public class PersonDAO implements PersonAccessInterface {
 
     @Override
     public List<Person> selectPersonsFromMovie(Movie movie) {
-        String SQL = "SELECT person_id, profession_id, details FROM worked_on WHERE film_id = " + '\'' + movie.getId() + '\'';
+        String SQL = "SELECT person_id, profession_id, role FROM worked_on WHERE film_id = " + '\'' + movie.getId() + '\'';
         personsFromMovie = new ArrayList<Person>();
         Person temp;
         try (Connection conn = connect();
@@ -43,7 +45,9 @@ public class PersonDAO implements PersonAccessInterface {
             while(rs.next()){
                 temp = getPerson(UUID.fromString(rs.getString("person_id")));
                 temp.setProfession(getProfession(rs.getInt("profession_id")));
+                temp.setRole(new Role(getMovieRole(temp, movie)));
                 personsFromMovie.add(temp);
+
             }
 
 
@@ -73,7 +77,6 @@ public class PersonDAO implements PersonAccessInterface {
         return null;
     }
 
-    @Override
     public Person getPerson(UUID person) {
         String SQL = "SELECT person_name, birthday, birthplace FROM person WHERE person_id = " + '\'' + person + '\'';
         Person personFound = null;
@@ -92,6 +95,23 @@ public class PersonDAO implements PersonAccessInterface {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String getMovieRole(Person person, Movie movie) {
+        String SQL = "SELECT role FROM worked_on WHERE film_id = " + '\'' + movie.getId() + '\'' + "AND person_id = " + '\'' + person.getId() + '\'';
+        sb = new StringBuilder();
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+            pstmt.execute();
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                sb.append(rs.getString("role"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
 
     @Override

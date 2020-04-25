@@ -11,7 +11,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -23,11 +22,9 @@ import model.Person;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class Controller{
 
     @FXML
     TabPane tabPane;
@@ -45,17 +42,17 @@ public class Controller implements Initializable {
     ListView<Movie> listViewImages;
 
 
-    MovieAccessInterface dao = new MovieDAO();
+    MovieAccessInterface daoMovie = new MovieDAO();
     PersonAccessInterface daoPerson = new PersonDAO();
     ObservableList<Movie> listMovie;
     Movie movie;
 
     public void searchMovies(ActionEvent actionEvent) {
         actionEvent.consume();
-        dao.connect();
+        daoMovie.connect();
         listViewImages.getItems().clear();
 
-        listMovie = FXCollections.observableArrayList(dao.searchMovies(titleField.getText()));
+        listMovie = FXCollections.observableArrayList(daoMovie.searchMovies(titleField.getText()));
         for (Movie movie : listMovie) {
             listViewImages.getItems().add(movie);
         }
@@ -68,11 +65,11 @@ public class Controller implements Initializable {
 
     public void insertTitle(ActionEvent actionEvent) {
         actionEvent.consume();
-        dao.connect();
+        daoMovie.connect();
         try {
             movie = new Movie(insertTitleField.getText(), Integer.parseInt(insertYearField.getText()));
             movie.setPoster(insertPosterField.getText());
-            dao.insertMovie(movie);
+            daoMovie.insertMovie(movie);
 
         } catch (NumberFormatException | IOException e) {
             System.out.println("year field only takes whole numbers");
@@ -117,16 +114,18 @@ public class Controller implements Initializable {
 
                             try {
                                 Parent parent = loader.load();
-                                EditMovieController thisMovieController = loader.getController(); //load specific controller from that specific fxml
+                                EditMovieController otherMovieController = loader.getController(); //load specific controller from that specific fxml
                                 Tab movieTab = new Tab(selectedMovie.getTitle()); //create tab
                                 movieTab.setContent(parent); //set fxml to the tab
 
                                 //Passing values to other controller
-                                thisMovieController.setLabel(cast);
-                                thisMovieController.setMovie(selectedMovie);
+                                otherMovieController.setDAOMovie(daoMovie);
+                                otherMovieController.setDAOPerson(daoPerson);
+                                otherMovieController.setProductionPeople(cast);
+                                otherMovieController.setMovie(selectedMovie);
 
                                 tabPane.getTabs().add(movieTab); //add tab to the original fxml tabpane
-                                thisMovieController.tabPane = tabPane;
+                                otherMovieController.tabPane = tabPane;
                                 tabPane.getSelectionModel()
                                         .selectLast(); //focus on the new tab
 
@@ -142,8 +141,4 @@ public class Controller implements Initializable {
 
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
 }

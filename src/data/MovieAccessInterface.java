@@ -1,12 +1,9 @@
 package data;
 
 import model.Movie;
-import model.Person;
-
-import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
-import java.util.UUID;
+
 
 public interface MovieAccessInterface {
     //int CHANGE_TITLE = 1;
