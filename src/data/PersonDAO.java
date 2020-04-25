@@ -4,6 +4,7 @@ import model.Movie;
 import model.Person;
 import model.Role;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +115,46 @@ public class PersonDAO implements PersonAccessInterface {
         return sb.toString();
     }
 
+    public List<Movie> getAllWorkedOnMovies(Person person) {
+        String SQL = "SELECT film_id FROM worked_on WHERE person_id = " + '\'' + person.getId() + '\'';
+        Movie movie;
+        ArrayList<Movie> movieList = new ArrayList<>();
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+            pstmt.execute();
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                UUID id = UUID.fromString(rs.getString("film_id"));
+                movieList.add(getMovie(id));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movieList;
+    }
+
+    private Movie getMovie(UUID movieID){
+        String SQL = "SELECT title, release_year, poster FROM movies WHERE id = " + '\'' + movieID + '\'';
+        Movie movie;
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+            pstmt.execute();
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                movie = new Movie(rs.getString("title"), rs.getInt("release_year"));
+                movie.setId(movieID);
+                movie.setPoster(rs.getString("poster"));
+                return movie;
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
     @Override
     public void insertPerson(Person person) {
 
@@ -121,11 +162,36 @@ public class PersonDAO implements PersonAccessInterface {
 
     @Override
     public void deletePerson(Person person) {
+        String SQL = "DELETE FROM person WHERE id = "+'\''+person.getId()+'\'';
 
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+            pstmt.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void updatePerson(Person person) {
+        String SQL = "UPDATE person SET person_name = ?, birthday = ?, birthplace = ? WHERE person_id = "+'\''+person.getId()+'\'';
 
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+
+            //movie = new Movie(movie.getTitle(), movie.getYear());
+            //movie.setPoster(posterUrl);
+
+            pstmt.setString(1, person.getName());
+            pstmt.setDate(2, (Date) person.getBirthday());
+            pstmt.setString(3, person.getBirthplace());
+
+            pstmt.execute();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

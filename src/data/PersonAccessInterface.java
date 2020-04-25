@@ -12,6 +12,8 @@ public interface PersonAccessInterface  {
 
     List<Person> selectPersonsFromMovie(Movie movie);
 
+    public List<Movie> getAllWorkedOnMovies(Person person);
+
     void insertPerson(Person person);
 
     void deletePerson(Person person);

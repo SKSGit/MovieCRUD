@@ -41,10 +41,6 @@ public class EditMovieController{
     ListView<Person> directorListView;
     @FXML
     ListView<Person> writerListView;
-
-    ObservableList<Person> listDirector;
-    ObservableList<Person> listWriter;
-
     Movie movie;
     MovieAccessInterface daoMovie;
     PersonAccessInterface daoPerson;
@@ -204,6 +200,7 @@ public class EditMovieController{
 
                                 //Passing values to other controller
                                 otherMovieController.setDAOPerson(daoPerson);
+                                otherMovieController.setDAOMovie(daoMovie);
                                 //otherMovieController.setProductionPeople(cast);
                                 otherMovieController.setPerson(selectedPerson);
 
