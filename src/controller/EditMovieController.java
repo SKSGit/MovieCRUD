@@ -7,23 +7,26 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import model.Movie;
 import model.Person;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
-public class EditMovieController{
+public class EditMovieController {
 
     @FXML
     TextField insertTitleField;
@@ -41,6 +44,12 @@ public class EditMovieController{
     ListView<Person> directorListView;
     @FXML
     ListView<Person> writerListView;
+    @FXML
+    Button editCastButton;
+    @FXML
+    Button editWriterButton;
+    @FXML
+    Button editDirectorButton;
     Movie movie;
     MovieAccessInterface daoMovie;
     PersonAccessInterface daoPerson;
@@ -86,9 +95,9 @@ public class EditMovieController{
 
     }
 
-    public void setProductionPeople(List<Person> cast) {
+    public void setCastAndCrew(List<Person> people) {
 
-        Iterator it = cast.iterator();
+        Iterator it = people.iterator();
         Person person;
         while (it.hasNext()) {
             person = (Person) it.next();
@@ -100,7 +109,7 @@ public class EditMovieController{
                 it.remove();
             }
         }
-        createTableView(FXCollections.observableArrayList(cast));
+        createTableView(FXCollections.observableArrayList(people));
         makeCellsDirectorClickable();
         makeCellsWriterClickable();
         makeCellsCastClickable();
@@ -122,7 +131,40 @@ public class EditMovieController{
         poster.setImage(SwingFXUtils.toFXImage((BufferedImage) movie.getPoster(), null));
     }
 
-    private void createTableView(ObservableList<Person> cast){
+    public void editPerson(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(this.getClass().getResource("/view/EditCastCrew.fxml")); //loading plain fxml file gridpane
+
+        try {
+            Parent parent = loader.load();
+            EditCastCrewController otherMovieController = loader.getController(); //load specific controller from that specific fxml
+            Stage stage = new Stage();
+            stage.setScene(new Scene(parent));
+            stage.setTitle(actionEvent.getSource().toString().split("\'", 3)[1]); //split toString with ' into string array and get middle text
+            stage.show();
+
+            if (actionEvent.getSource() == editDirectorButton) {
+                otherMovieController.setPeople(directorListView.getItems());
+            }
+            if (actionEvent.getSource() == editWriterButton) {
+                otherMovieController.setPeople(writerListView.getItems());
+            }
+            if (actionEvent.getSource() == editCastButton) {
+                otherMovieController.setPeople(castView.getItems());
+            }
+
+            otherMovieController.setDAOMovie(daoMovie);
+            otherMovieController.setDAOPerson(daoPerson);
+
+
+            //Passing values to other controller
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createTableView(ObservableList<Person> cast) {
         castView.setItems(cast);
         TableColumn<Person, String> actor = new TableColumn<>("Actor");
         actor.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -141,7 +183,7 @@ public class EditMovieController{
 
                         Person selectedPerson = castView.getSelectionModel()
                                 .getSelectedItem();
-                        //ArrayList<Person> cast = (ArrayList<Person>) daoPerson.selectPersonsFromMovie(selectedPerson);
+                        //ArrayList<Person> people = (ArrayList<Person>) daoPerson.selectPersonsFromMovie(selectedPerson);
                         if (selectedPerson != null) {
 
                             FXMLLoader loader = new FXMLLoader();
@@ -155,7 +197,7 @@ public class EditMovieController{
 
                                 //Passing values to other controller
                                 otherMovieController.setDAOPerson(daoPerson);
-                                //otherMovieController.setProductionPeople(cast);
+                                //otherMovieController.setProductionPeople(people);
                                 otherMovieController.setPerson(selectedPerson);
 
                                 tabPane.getTabs().add(movieTab); //add tab to the original fxml tabpane
@@ -186,7 +228,7 @@ public class EditMovieController{
 
                         Person selectedPerson = writerListView.getSelectionModel()
                                 .getSelectedItem();
-                        //ArrayList<Person> cast = (ArrayList<Person>) daoPerson.selectPersonsFromMovie(selectedPerson);
+                        //ArrayList<Person> people = (ArrayList<Person>) daoPerson.selectPersonsFromMovie(selectedPerson);
                         if (selectedPerson != null) {
 
                             FXMLLoader loader = new FXMLLoader();
@@ -201,7 +243,7 @@ public class EditMovieController{
                                 //Passing values to other controller
                                 otherMovieController.setDAOPerson(daoPerson);
                                 otherMovieController.setDAOMovie(daoMovie);
-                                //otherMovieController.setProductionPeople(cast);
+                                //otherMovieController.setProductionPeople(people);
                                 otherMovieController.setPerson(selectedPerson);
 
                                 tabPane.getTabs().add(movieTab); //add tab to the original fxml tabpane
@@ -232,7 +274,7 @@ public class EditMovieController{
 
                         Person selectedPerson = directorListView.getSelectionModel()
                                 .getSelectedItem();
-                        //ArrayList<Person> cast = (ArrayList<Person>) daoPerson.selectPersonsFromMovie(selectedPerson);
+                        //ArrayList<Person> people = (ArrayList<Person>) daoPerson.selectPersonsFromMovie(selectedPerson);
                         if (selectedPerson != null) {
 
                             FXMLLoader loader = new FXMLLoader();
@@ -246,7 +288,7 @@ public class EditMovieController{
 
                                 //Passing values to other controller
                                 otherMovieController.setDAOPerson(daoPerson);
-                                //otherMovieController.setProductionPeople(cast);
+                                //otherMovieController.setProductionPeople(people);
                                 otherMovieController.setPerson(selectedPerson);
 
                                 tabPane.getTabs().add(movieTab); //add tab to the original fxml tabpane

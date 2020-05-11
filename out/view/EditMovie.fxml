@@ -56,7 +56,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                          <Button fx:id="saveButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#saveMovieChanges" prefHeight="47.0" prefWidth="106.0" text="Save Changes" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                          <Button fx:id="saveButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#saveMovieChanges" prefHeight="29.0" prefWidth="113.0" text="Save Changes" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <effect>
                         <Lighting diffuseConstant="2.0" specularConstant="0.0" specularExponent="40.0" surfaceScale="0.0">
                            <bumpInput>
@@ -130,6 +130,8 @@
                         <Insets />
                      </GridPane.margin>
                   </ImageView>
+            <Button fx:id="editDirectorButton" mnemonicParsing="false" onAction="#editPerson" text="Edit Director(s)" GridPane.halignment="RIGHT" />
+            <Button fx:id="editWriterButton" mnemonicParsing="false" onAction="#editPerson" text="Edit Writer(s)" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                </children>
             </GridPane>
             <GridPane GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
@@ -147,6 +149,7 @@
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy></TableView>
+            <Button fx:id="editCastButton" mnemonicParsing="false" onAction="#editPerson" text="Edit Cast" GridPane.halignment="RIGHT" />
          </children>
             </GridPane>
                 </children>

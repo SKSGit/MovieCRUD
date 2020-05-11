@@ -55,6 +55,8 @@ public class PersonDAO implements PersonAccessInterface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        movie.setPeople((ArrayList<Person>) personsFromMovie);
+
         return personsFromMovie;
     }
 

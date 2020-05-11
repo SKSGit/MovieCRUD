@@ -5,6 +5,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Movie {
@@ -13,6 +14,7 @@ public class Movie {
     int year;
     Image poster;
     String posterUrl;
+    ArrayList<Person> people;
 
     public Movie(String title, int year) {
         this.id = java.util.UUID.randomUUID();
@@ -74,4 +76,8 @@ public class Movie {
     public void setYear(int year) {
         this.year = year;
     }
+
+    public ArrayList<Person> getPeople() { return people; }
+
+    public void setPeople(ArrayList<Person> people) {this.people = people; }
 }

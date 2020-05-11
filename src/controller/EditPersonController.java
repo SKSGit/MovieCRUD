@@ -19,7 +19,6 @@ import model.Person;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class EditPersonController {
@@ -117,7 +116,7 @@ public class EditPersonController {
                                 //Passing values to other controller
                                 otherMovieController.setDAOMovie(daoMovie);
                                 otherMovieController.setDAOPerson(daoPerson);
-                                otherMovieController.setProductionPeople(cast);
+                                otherMovieController.setCastAndCrew(cast);
                                 otherMovieController.setMovie(selectedMovie);
 
                                 tabPane.getTabs().add(movieTab); //add tab to the original fxml tabpane

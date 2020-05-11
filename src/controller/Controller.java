@@ -106,7 +106,7 @@ public class Controller{
 
                         Movie selectedMovie = listViewImages.getSelectionModel()
                                 .getSelectedItem();
-                        ArrayList<Person> cast = (ArrayList<Person>) daoPerson.selectPersonsFromMovie(selectedMovie);
+                        ArrayList<Person> people = (ArrayList<Person>) daoPerson.selectPersonsFromMovie(selectedMovie);
                         if (selectedMovie != null) {
 
                             FXMLLoader loader = new FXMLLoader();
@@ -121,7 +121,7 @@ public class Controller{
                                 //Passing values to other controller
                                 otherMovieController.setDAOMovie(daoMovie);
                                 otherMovieController.setDAOPerson(daoPerson);
-                                otherMovieController.setProductionPeople(cast);
+                                otherMovieController.setCastAndCrew(people);
                                 otherMovieController.setMovie(selectedMovie);
 
                                 tabPane.getTabs().add(movieTab); //add tab to the original fxml tabpane
