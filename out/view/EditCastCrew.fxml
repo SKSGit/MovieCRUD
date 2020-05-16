@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.2-internal" fx:controller="controller.EditCastCrewController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditCastCrewController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -17,7 +17,7 @@
   </rowConstraints>
    <children>
       <ListView fx:id="listView" editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-      <Button mnemonicParsing="false" text="Save Changes" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+      <Button fx:id="doneButton" mnemonicParsing="false" onAction="#handleDone" text="Done" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
          <effect>
             <Lighting diffuseConstant="1.45" specularConstant="0.44" surfaceScale="0.0">
                <bumpInput>
@@ -26,13 +26,14 @@
                <light>
                   <Light.Distant>
                      <color>
-                        <Color red="0.4649122953414917" green="0.9473684430122375" blue="0.5533625483512878" />
+                        <Color red="0.4699999988079071" green="0.9399999976158142" blue="0.9349097609519958" />
                      </color>
                   </Light.Distant>
                </light>
             </Lighting>
          </effect>
       </Button>
-      <Button mnemonicParsing="false" text="Cancel" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+      <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+      <Button fx:id="removeButton" mnemonicParsing="false" onAction="#handleRemove" text="Remove" GridPane.halignment="CENTER" />
    </children>
 </GridPane>

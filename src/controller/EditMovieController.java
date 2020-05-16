@@ -2,8 +2,6 @@ package controller;
 
 import data.MovieAccessInterface;
 import data.PersonAccessInterface;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -103,13 +101,13 @@ public class EditMovieController {
             person = (Person) it.next();
             if (person.getProfession().equals("Director")) {
                 directorListView.getItems().add(person);
-                it.remove();
             } else if (person.getProfession().equals("Writer")) {
                 writerListView.getItems().add(person);
-                it.remove();
+            } else if (person.getProfession().equals("Actor")) {
+                castView.getItems().add(person);
             }
         }
-        createTableView(FXCollections.observableArrayList(people));
+        createCastView();
         makeCellsDirectorClickable();
         makeCellsWriterClickable();
         makeCellsCastClickable();
@@ -129,6 +127,14 @@ public class EditMovieController {
         insertYearField.setText(Integer.toString(movie.getYear()));
         insertPosterField.setText(movie.getPosterUrl());
         poster.setImage(SwingFXUtils.toFXImage((BufferedImage) movie.getPoster(), null));
+    }
+
+    public void handleRefresh(ActionEvent actionEvent){
+        castView.getItems().clear();
+        castView.getColumns().clear();
+        directorListView.getItems().clear();
+        writerListView.getItems().clear();
+        setCastAndCrew(movie.getPeople());
     }
 
     public void editPerson(ActionEvent actionEvent) {
@@ -153,6 +159,7 @@ public class EditMovieController {
                 otherMovieController.setPeople(castView.getItems());
             }
 
+            otherMovieController.setMovie(movie);
             otherMovieController.setDAOMovie(daoMovie);
             otherMovieController.setDAOPerson(daoPerson);
 
@@ -164,14 +171,16 @@ public class EditMovieController {
         }
     }
 
-    private void createTableView(ObservableList<Person> cast) {
-        castView.setItems(cast);
+    private void createCastView() {
+        //castView.setItems(cast);
         TableColumn<Person, String> actor = new TableColumn<>("Actor");
         actor.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<Person, String> role = new TableColumn<>("Role");
         role.setCellValueFactory(new PropertyValueFactory<>("role"));
         castView.getColumns().add(actor);
         castView.getColumns().add(role);
+
+
     }
 
     private void makeCellsCastClickable() {

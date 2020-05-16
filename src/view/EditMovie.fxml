@@ -42,6 +42,7 @@
                <GridPane.margin>
                   <Insets />
                </GridPane.margin></TextField>
+            <Button mnemonicParsing="false" onAction="#handleRefresh" text="Refresh" />
                </children>
             </GridPane>
             <GridPane GridPane.rowIndex="4">
