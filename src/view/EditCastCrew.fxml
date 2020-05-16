@@ -33,7 +33,7 @@
             </Lighting>
          </effect>
       </Button>
-      <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+      <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
       <Button fx:id="removeButton" mnemonicParsing="false" onAction="#handleRemove" text="Remove" GridPane.halignment="CENTER" />
       <Button mnemonicParsing="false" onAction="#handleAdd" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
    </children>

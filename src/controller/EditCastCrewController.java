@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 import model.Movie;
 import model.Person;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -19,7 +18,7 @@ public class EditCastCrewController {
     @FXML
     ListView<Person> listView;
     @FXML
-    Button closeButton;
+    Button cancelButton;
     Movie thisMovie;
     ObservableList<Person> listPerson;
     PersonAccessInterface daoPerson;
@@ -59,6 +58,7 @@ public class EditCastCrewController {
 
     public void handleRemove(ActionEvent actionEvent) {
         int indexToRemove = listView.getSelectionModel().getSelectedIndex();
+        if (indexToRemove == -1) return;
         thisPerson = listView.getItems().remove(indexToRemove);
         peopleToRemove.add(thisPerson);
     }
@@ -76,7 +76,7 @@ public class EditCastCrewController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            Stage stage = (Stage) closeButton.getScene().getWindow();
+            Stage stage = (Stage) cancelButton.getScene().getWindow();
             stage.close();
         } else {
             return;
@@ -85,7 +85,7 @@ public class EditCastCrewController {
 
     @FXML
     private void handleCancel(ActionEvent actionEvent) {
-        Stage stage = (Stage) closeButton.getScene().getWindow();//get a handle to the stage
+        Stage stage = (Stage) cancelButton.getScene().getWindow();//get a handle to the stage
         stage.close();// do what you have to do
     }
 
