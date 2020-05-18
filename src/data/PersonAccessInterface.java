@@ -12,7 +12,9 @@ public interface PersonAccessInterface  {
 
     List<Person> selectPersonsFromMovie(Movie movie);
 
-    public List<Movie> getAllWorkedOnMovies(Person person);
+    List<Movie> getAllWorkedOnMovies(Person person);
+
+    List<Person> searchMovies(String search);
 
     void insertPerson(Person person);
 

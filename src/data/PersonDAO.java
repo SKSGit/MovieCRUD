@@ -16,7 +16,7 @@ public class PersonDAO implements PersonAccessInterface {
     private final String user = "dev";
     private final String password = "hello";
 
-    List<Person> personsFromMovie;
+    List<Person> persons;
     StringBuilder sb;
 
     @Override
@@ -35,7 +35,7 @@ public class PersonDAO implements PersonAccessInterface {
     @Override
     public List<Person> selectPersonsFromMovie(Movie movie) {
         String SQL = "SELECT person_id, profession_id, role FROM worked_on WHERE film_id = " + '\'' + movie.getId() + '\'';
-        personsFromMovie = new ArrayList<Person>();
+        persons = new ArrayList<Person>();
         Person temp;
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL)) {
@@ -47,7 +47,7 @@ public class PersonDAO implements PersonAccessInterface {
                 temp = getPerson(UUID.fromString(rs.getString("person_id")));
                 temp.setProfession(getProfession(rs.getInt("profession_id")));
                 temp.setRole(new Role(getMovieRole(temp, movie)));
-                personsFromMovie.add(temp);
+                persons.add(temp);
 
             }
 
@@ -55,9 +55,9 @@ public class PersonDAO implements PersonAccessInterface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        movie.setPeople((ArrayList<Person>) personsFromMovie);
+        movie.setPeople((ArrayList<Person>) persons);
 
-        return personsFromMovie;
+        return persons;
     }
 
     public String getProfession(int profession_id) {
@@ -173,6 +173,31 @@ public class PersonDAO implements PersonAccessInterface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Person> searchMovies(String search)  {
+        String SQL = "SELECT person_name, person_id, birthday, birthplace "
+                + "FROM person "
+                + "WHERE person_name ILIKE ?"; //ILIKE  is case-insensitive
+        persons = new ArrayList<>();
+        Person temp;
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+
+            pstmt.setString(1, "%" + search + "%"); //% means pattern matching what we search
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                temp = new Person(rs.getObject("person_id", java.util.UUID.class), rs.getString("person_name"));//VERY IMPORTANT to set id. so it matches the one in database
+                temp.setBirthday(rs.getDate("birthday"));
+                temp.setBirthplace(rs.getString("birthplace"));
+                persons.add(temp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return persons;
     }
 
     @Override

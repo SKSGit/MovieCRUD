@@ -5,11 +5,15 @@ import data.PersonAccessInterface;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Movie;
 import model.Person;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -19,6 +23,7 @@ public class EditCastCrewController {
     ListView<Person> listView;
     @FXML
     Button cancelButton;
+    Button originalEditButton;
     Movie thisMovie;
     ObservableList<Person> listPerson;
     PersonAccessInterface daoPerson;
@@ -54,6 +59,27 @@ public class EditCastCrewController {
 
     public void handleAdd(ActionEvent actionEvent) {
 
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(this.getClass().getResource("/view/AddPerson.fxml")); //loading plain fxml file gridpane
+
+        try {
+            Parent parent = loader.load();
+            AddPersonController otherMovieController = loader.getController(); //load specific controller from that specific fxml
+            Stage stage = new Stage();
+            stage.setScene(new Scene(parent));
+            stage.setTitle(originalEditButton.toString().split("\'", 3)[1]); //split toString with ' into string array and get middle text
+            stage.show();
+            otherMovieController.setProfession(originalEditButton.toString().split("\'", 3)[1]);
+
+
+            otherMovieController.setMovie(thisMovie);
+            otherMovieController.setDAOMovie(daoMovie);
+            otherMovieController.setDAOPerson(daoPerson);
+            //Passing values to other controller
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void handleRemove(ActionEvent actionEvent) {
@@ -87,6 +113,10 @@ public class EditCastCrewController {
     private void handleCancel(ActionEvent actionEvent) {
         Stage stage = (Stage) cancelButton.getScene().getWindow();//get a handle to the stage
         stage.close();// do what you have to do
+    }
+
+    public void setOriginalEditButton(Button buttonPressed) {
+        originalEditButton = buttonPressed;
     }
 
     private void makeCells() {

@@ -151,12 +151,15 @@ public class EditMovieController {
 
             if (actionEvent.getSource() == editDirectorButton) {
                 otherMovieController.setPeople(directorListView.getItems());
+                otherMovieController.setOriginalEditButton(editDirectorButton);
             }
             if (actionEvent.getSource() == editWriterButton) {
                 otherMovieController.setPeople(writerListView.getItems());
+                otherMovieController.setOriginalEditButton(editWriterButton);
             }
             if (actionEvent.getSource() == editCastButton) {
                 otherMovieController.setPeople(castView.getItems());
+                otherMovieController.setOriginalEditButton(editCastButton);
             }
 
             otherMovieController.setMovie(movie);
