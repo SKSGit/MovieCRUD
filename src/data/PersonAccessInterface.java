@@ -16,7 +16,9 @@ public interface PersonAccessInterface  {
 
     List<Person> searchMovies(String search);
 
-    void insertPerson(Person person);
+    void updatePersonWorkedOn(List<Person> person, Movie movie);
+
+    void insertPerson(Person person, String profession, Movie movie);
 
     void deletePerson(Person person);
 

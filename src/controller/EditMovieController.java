@@ -59,6 +59,13 @@ public class EditMovieController {
             movie.setTitle(insertTitleField.getText());
             movie.setYear(Integer.parseInt(insertYearField.getText()));
             movie.setPoster(insertPosterField.getText());
+
+            //TODO
+
+                daoPerson.updatePersonWorkedOn(movie.getPeople(), movie);
+
+            /////
+           // daoPerson.updatePersonWorkedOn();
         } catch (NumberFormatException | IOException e) {
             System.out.println("year field only takes whole numbers");
         }
@@ -69,7 +76,7 @@ public class EditMovieController {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("This will permanently delete the movie from the database");
+        alert.setHeaderText("This will permanently delete the item from the database");
         alert.setContentText("Are you ok with this?");
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -129,12 +136,15 @@ public class EditMovieController {
         poster.setImage(SwingFXUtils.toFXImage((BufferedImage) movie.getPoster(), null));
     }
 
-    public void handleRefresh(ActionEvent actionEvent){
+    public void handleRefresh(ActionEvent actionEvent) {
         castView.getItems().clear();
         castView.getColumns().clear();
         directorListView.getItems().clear();
         writerListView.getItems().clear();
-        setCastAndCrew(movie.getPeople());
+        if(movie.getPeople()!=null){
+            setCastAndCrew(movie.getPeople());
+        }
+
     }
 
     public void editPerson(ActionEvent actionEvent) {

@@ -12,6 +12,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import model.Movie;
 import model.Person;
+import model.Role;
+
+import java.util.UUID;
 
 public class AddPersonController {
     @FXML
@@ -19,13 +22,16 @@ public class AddPersonController {
     PersonAccessInterface daoPerson;
     MovieAccessInterface daoMovie;
     Movie thisMovie;
+    Person thisPerson;
     ObservableList<Person> listPerson;
     @FXML
     TextField searchField;
     @FXML
     TextField roleField;
+    @FXML
+    TextField newPersonField;
 
-    public void setScene(){
+    public void setScene() {
         makeCells();
     }
 
@@ -38,21 +44,59 @@ public class AddPersonController {
         listPerson = people;
     }
 
-    public void searchPerson(ActionEvent actionEvent){
+    public void searchPerson(ActionEvent actionEvent) {
         listViewPeople.getItems().setAll(daoPerson.searchMovies(searchField.getText()));
     }
 
-    public void setProfession(String profession){
+    public void setProfession(String profession) {
 
-            if (profession.equals("Edit Director(s)")) {
-                roleField.setText("Director");
-                roleField.setEditable(false);
-            } else if (profession.equals("Edit Writer(s)")){
-                roleField.setText("Writer");
-                roleField.setEditable(false);
-            }
+        if (profession.equals("Edit Director(s)")) {
+            roleField.setText("Director");
+            roleField.setEditable(false);
+        } else if (profession.equals("Edit Writer(s)")) {
+            roleField.setText("Writer");
+            roleField.setEditable(false);
+        }
 
 
+    }
+
+    public void handleAddRole(ActionEvent actionEvent) {
+        if (roleField.getText().isEmpty() || (listViewPeople.getSelectionModel().getSelectedItem() == null && newPersonField.getText().isEmpty())) {
+            System.out.println("Person must have a Role and vice versa");
+            return;
+        }
+        if (!newPersonField.getText().isEmpty() && (listViewPeople.getSelectionModel().getSelectedItem() != null && !newPersonField.getText().isEmpty()))
+        {
+            System.out.println("You can't assign a Role to both an existing Person and a new Person");
+            return;
+        }
+        if (!newPersonField.getText().isEmpty()) {
+            thisPerson = new Person(UUID.randomUUID(), newPersonField.getText());
+            determineProfession(thisPerson);
+            thisPerson.setRole(new Role(roleField.getText()));
+
+        } else if (listViewPeople.getSelectionModel().getSelectedItem() != null){
+            thisPerson = listViewPeople.getSelectionModel().getSelectedItem();
+            determineProfession(thisPerson);
+            thisPerson.setRole(new Role(roleField.getText()));
+        }
+        //daoPerson.insertPerson(thisPerson, thisPerson.getProfession(), thisMovie);
+        if (thisMovie != null) {
+            thisMovie.getPeople().add(thisPerson);
+        }
+    }
+
+    /**
+     * Determines persons profession for this movie. Based on which button was pressed to get here from EditMovie.
+     * @param person
+     */
+    public void determineProfession(Person person) {
+        if (roleField.isEditable()) {
+            person.setProfession("Actor");
+        } else {
+            person.setProfession(roleField.getText());
+        }
     }
 
     public void setDAOMovie(MovieAccessInterface dao) {
@@ -73,7 +117,7 @@ public class AddPersonController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setText(person.getName() + " (" + person.getBirthday() +" "+ person.getBirthplace() + ")");
+                    setText(person.getName() + " (" + person.getBirthday() + " " + person.getBirthplace() + ")");
                 }
             }
 

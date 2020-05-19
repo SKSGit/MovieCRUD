@@ -57,6 +57,13 @@ public class EditCastCrewController {
         this.daoPerson = dao;
     }
 
+    public void handleRefresh(ActionEvent actionEvent) {
+        listView.getItems().clear();
+        for (Person person : thisMovie.getPeople()) {
+            listView.getItems().add(person);
+        }
+    }
+
     public void handleAdd(ActionEvent actionEvent) {
 
         FXMLLoader loader = new FXMLLoader();
@@ -69,13 +76,13 @@ public class EditCastCrewController {
             stage.setScene(new Scene(parent));
             stage.setTitle(originalEditButton.toString().split("\'", 3)[1]); //split toString with ' into string array and get middle text
             stage.show();
+
+            //Passing values to other controller
             otherMovieController.setProfession(originalEditButton.toString().split("\'", 3)[1]);
-
-
             otherMovieController.setMovie(thisMovie);
             otherMovieController.setDAOMovie(daoMovie);
             otherMovieController.setDAOPerson(daoPerson);
-            //Passing values to other controller
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -127,7 +134,7 @@ public class EditCastCrewController {
                 if (empty) {
                     setText(null);
                     setGraphic(null);
-                } else {
+                } else if (person != null){
                     setText(person.getName() + " (" + person.getRole().getName() + ")");
                 }
             }

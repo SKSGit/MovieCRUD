@@ -49,7 +49,7 @@
             <RowConstraints />
         </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" text="Add Person to Role" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#handleAddRole" text="Add Person to Role" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                <effect>
                   <Lighting diffuseConstant="1.81" specularConstant="0.0" specularExponent="20.47" surfaceScale="0.0">
                      <bumpInput>
