@@ -1,0 +1,16 @@
+- It would be nice to have cascading effects when deleting/updating a movie or a person. 
+So that all other tables that reference a deleted tuple, also would be deleted (or default to null)
+
+- sorting movies based on genre would have been interesting. Because "genre_filmed" is a table that describes a direct 1-to-1 relationship.
+Currently there is only 1 table describing relationships and that is "worked_on". 
+"worked_on" might seem a bit bloated since it references so many other table keys. (such as person_id, profession_id, film_id)
+
+- improvements/optimizations to the database queries. they are far from perfect and can be jarring to read. 
+Refining it over time might be worthwhile in terms of learning best practice.
+
+- Database access interfaces might seem inconsistent. Sometimes my implementations seem to dictate the interfaces and thats not good.
+
+- in terms of gui javafx is kinda nice because im used to it. But its not an industry standard 
+so im gonna move on to something a bit more relevant in industry.
+
+- it would be interesting to further develop this project with networking features. (maybe once the sql queries have been optimized)
