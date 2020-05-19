@@ -59,7 +59,7 @@ public class EditCastCrewController {
 
     public void handleRefresh(ActionEvent actionEvent) {
         listView.getItems().clear();
-        for (Person person : thisMovie.getPeople()) {
+        for (Person person : listPerson) {
             listView.getItems().add(person);
         }
     }
@@ -104,7 +104,7 @@ public class EditCastCrewController {
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("Person(s) removed.");
+        alert.setHeaderText("Person(s) edited.");
         alert.setContentText("Changes will be committed when 'Save Changes' is pressed in movie page.");
 
         Optional<ButtonType> result = alert.showAndWait();

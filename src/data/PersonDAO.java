@@ -45,7 +45,7 @@ public class PersonDAO implements PersonAccessInterface {
             while (rs.next()) {
                 temp = getPerson(UUID.fromString(rs.getString("person_id")));
                 temp.setProfession(getProfession(rs.getInt("profession_id")));
-                temp.setRole(new Role(getMovieRole(temp, movie)));
+                temp.setRole(new Role(getMovieRole(temp, movie, temp.getProfession())));
                 persons.add(temp);
 
             }
@@ -99,8 +99,14 @@ public class PersonDAO implements PersonAccessInterface {
         return null;
     }
 
-    public String getMovieRole(Person person, Movie movie) {
-        String SQL = "SELECT role FROM worked_on WHERE film_id = " + '\'' + movie.getId() + '\'' + "AND person_id = " + '\'' + person.getId() + '\'';
+    public String getMovieRole(Person person, Movie movie, String profession) {
+        int prof_id;
+        if(profession.equals("Director")){ prof_id = 1; }
+        else if (profession.equals("Writer")){prof_id = 2;} else {
+            prof_id = 3;
+        }
+
+        String SQL = "SELECT role FROM worked_on WHERE film_id = " + '\'' + movie.getId() + '\'' + "AND person_id = " + '\'' + person.getId() + '\''+"AND profession_id ="+'\''+prof_id+'\'';
         sb = new StringBuilder();
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(SQL)) {
@@ -109,11 +115,12 @@ public class PersonDAO implements PersonAccessInterface {
 
             while (rs.next()) {
                 sb.append(rs.getString("role"));
+                return sb.toString();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return sb.toString();
+        return "Error cant get movie role";
     }
 
     public List<Movie> getAllWorkedOnMovies(Person person) {
@@ -180,7 +187,7 @@ public class PersonDAO implements PersonAccessInterface {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 System.out.println("This 'worked on' entry already exists");
-                return; //end method early if title exists
+                return; //end method early if person exists
             }
 
         } catch (SQLException e) {
@@ -312,7 +319,7 @@ public class PersonDAO implements PersonAccessInterface {
             for (int i = 0; i < persons.size(); i++) {
                 hasLoopBeenEntered = true;
                 for (Person readPerson : person) {
-                    if (readPerson.getId().equals(persons.get(i).getId())) {
+                    if (readPerson.getId().equals(persons.get(i).getId()) && readPerson.getProfession().equals(persons.get(i).getProfession())) {
                         listHasItems = true;
                         break;
                     }
