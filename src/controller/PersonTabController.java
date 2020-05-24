@@ -21,7 +21,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class EditPersonController {
+public class PersonTabController {
     @FXML
     TabPane tabPane;
     @FXML
@@ -109,7 +109,7 @@ public class EditPersonController {
 
                             try {
                                 Parent parent = loader.load();
-                                EditMovieController otherMovieController = loader.getController(); //load specific controller from that specific fxml
+                                MovieTabController otherMovieController = loader.getController(); //load specific controller from that specific fxml
                                 Tab movieTab = new Tab(selectedMovie.getTitle()); //create tab
                                 movieTab.setContent(parent); //set fxml to the tab
 

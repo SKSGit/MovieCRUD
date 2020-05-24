@@ -16,7 +16,7 @@ import model.Role;
 
 import java.util.UUID;
 
-public class AddPersonController {
+public class AddPersonWindowController {
     @FXML
     ListView<Person> listViewPeople;
     PersonAccessInterface daoPerson;

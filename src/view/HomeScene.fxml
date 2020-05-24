@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane fx:id="tabPane" prefHeight="507.0" prefWidth="677.0" tabClosingPolicy="ALL_TABS" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<TabPane fx:id="tabPane" prefHeight="507.0" prefWidth="677.0" tabClosingPolicy="ALL_TABS" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
    <tabs>
       <Tab closable="false" text="Search Title">
          <content>

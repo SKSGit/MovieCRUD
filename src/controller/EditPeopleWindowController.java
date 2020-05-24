@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class EditCastCrewController {
+public class EditPeopleWindowController {
 
     @FXML
     ListView<Person> listView;
@@ -71,7 +71,7 @@ public class EditCastCrewController {
 
         try {
             Parent parent = loader.load();
-            AddPersonController otherMovieController = loader.getController(); //load specific controller from that specific fxml
+            AddPersonWindowController otherMovieController = loader.getController(); //load specific controller from that specific fxml
             Stage stage = new Stage();
             stage.setScene(new Scene(parent));
             stage.setTitle(originalEditButton.toString().split("\'", 3)[1]); //split toString with ' into string array and get middle text

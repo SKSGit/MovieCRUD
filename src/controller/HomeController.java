@@ -24,7 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Controller{
+public class HomeController {
 
     @FXML
     TabPane tabPane;
@@ -114,7 +114,7 @@ public class Controller{
 
                             try {
                                 Parent parent = loader.load();
-                                EditMovieController otherMovieController = loader.getController(); //load specific controller from that specific fxml
+                                MovieTabController otherMovieController = loader.getController(); //load specific controller from that specific fxml
                                 Tab movieTab = new Tab(selectedMovie.getTitle()); //create tab
                                 movieTab.setContent(parent); //set fxml to the tab
 

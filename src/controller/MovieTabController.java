@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public class EditMovieController {
+public class MovieTabController {
 
     @FXML
     TextField insertTitleField;
@@ -149,11 +149,11 @@ public class EditMovieController {
 
     public void editPerson(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(this.getClass().getResource("/view/EditCastCrew.fxml")); //loading plain fxml file gridpane
+        loader.setLocation(this.getClass().getResource("/view/EditPeople.fxml")); //loading plain fxml file gridpane
 
         try {
             Parent parent = loader.load();
-            EditCastCrewController otherMovieController = loader.getController(); //load specific controller from that specific fxml
+            EditPeopleWindowController otherMovieController = loader.getController(); //load specific controller from that specific fxml
             Stage stage = new Stage();
             stage.setScene(new Scene(parent));
             stage.setTitle(actionEvent.getSource().toString().split("\'", 3)[1]); //split toString with ' into string array and get middle text
@@ -213,7 +213,7 @@ public class EditMovieController {
 
                             try {
                                 Parent parent = loader.load();
-                                EditPersonController otherMovieController = loader.getController(); //load specific controller from that specific fxml
+                                PersonTabController otherMovieController = loader.getController(); //load specific controller from that specific fxml
                                 Tab movieTab = new Tab(selectedPerson.getName()); //create tab
                                 movieTab.setContent(parent); //set fxml to the tab
 
@@ -258,7 +258,7 @@ public class EditMovieController {
 
                             try {
                                 Parent parent = loader.load();
-                                EditPersonController otherMovieController = loader.getController(); //load specific controller from that specific fxml
+                                PersonTabController otherMovieController = loader.getController(); //load specific controller from that specific fxml
                                 Tab movieTab = new Tab(selectedPerson.getName()); //create tab
                                 movieTab.setContent(parent); //set fxml to the tab
 
@@ -304,7 +304,7 @@ public class EditMovieController {
 
                             try {
                                 Parent parent = loader.load();
-                                EditPersonController otherMovieController = loader.getController(); //load specific controller from that specific fxml
+                                PersonTabController otherMovieController = loader.getController(); //load specific controller from that specific fxml
                                 Tab movieTab = new Tab(selectedPerson.getName()); //create tab
                                 movieTab.setContent(parent); //set fxml to the tab
 
