@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Movie;
 import model.Person;
+import model.RoleType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,8 +60,25 @@ public class EditPeopleWindowController {
 
     public void handleRefresh(ActionEvent actionEvent) {
         listView.getItems().clear();
-        for (Person person : listPerson) {
-            listView.getItems().add(person);
+
+        for (Person person : thisMovie.getPeople()) {
+            switch (originalEditButton.getId()){
+                case "editCastButton":
+                    if (person.getRole().getValue() == RoleType.ACTOR.getValue()){
+                        listView.getItems().add(person);
+                    }
+                    break;
+                case "editDirectorButton":
+                    if (person.getRole().getValue() == RoleType.DIRECTOR.getValue()){
+                        listView.getItems().add(person);
+                    }
+                    break;
+                case "editWriterButton":
+                    if (person.getRole().getValue() == RoleType.WRITER.getValue()){
+                        listView.getItems().add(person);
+                    }
+                    break;
+            }
         }
     }
 

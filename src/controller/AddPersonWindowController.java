@@ -85,6 +85,7 @@ public class AddPersonWindowController {
         if (thisMovie != null) {
             thisMovie.getPeople().add(thisPerson);
         }
+        
     }
 
     /**
@@ -95,7 +96,7 @@ public class AddPersonWindowController {
     public void determineProfession(Person person) {
         if (roleField.isEditable()) {
             //person.setProfession("Actor");
-            person.setRole(new Role(RoleType.ACTOR.getValue()));
+            person.setRole(new Role(roleField.getText(), RoleType.ACTOR.getValue()));
         } else {
             switch (roleField.getText()) {
                 case "Writer":
