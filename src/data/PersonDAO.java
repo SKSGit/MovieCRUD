@@ -3,6 +3,7 @@ package data;
 import model.Movie;
 import model.Person;
 import model.Role;
+import model.RoleType;
 
 import java.io.IOException;
 import java.sql.*;
@@ -44,8 +45,7 @@ public class PersonDAO implements PersonAccessInterface {
 
             while (rs.next()) {
                 temp = getPerson(UUID.fromString(rs.getString("person_id")));
-                temp.setProfession(getProfession(rs.getInt("profession_id")));
-                temp.setRole(new Role(getMovieRole(temp, movie, temp.getProfession())));
+                temp.setRole(new Role(rs.getString("role"), rs.getInt("profession_id")));
                 persons.add(temp);
 
             }
@@ -57,26 +57,6 @@ public class PersonDAO implements PersonAccessInterface {
         movie.setPeople((ArrayList<Person>) persons);
 
         return persons;
-    }
-
-    public String getProfession(int profession_id) {
-        String SQL = "SELECT profession_name FROM profession WHERE profession_id = " + '\'' + profession_id + '\'';
-        String profession = null;
-        try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
-            pstmt.execute();
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                profession = rs.getString("profession_name");
-
-            }
-            return profession;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public Person getPerson(UUID person) {
@@ -99,29 +79,6 @@ public class PersonDAO implements PersonAccessInterface {
         return null;
     }
 
-    public String getMovieRole(Person person, Movie movie, String profession) {
-        int prof_id;
-        if(profession.equals("Director")){ prof_id = 1; }
-        else if (profession.equals("Writer")){prof_id = 2;} else {
-            prof_id = 3;
-        }
-
-        String SQL = "SELECT role FROM worked_on WHERE film_id = " + '\'' + movie.getId() + '\'' + "AND person_id = " + '\'' + person.getId() + '\''+"AND profession_id ="+'\''+prof_id+'\'';
-        sb = new StringBuilder();
-        try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(SQL)) {
-            pstmt.execute();
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                sb.append(rs.getString("role"));
-                return sb.toString();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "Error cant get movie role";
-    }
 
     public List<Movie> getAllWorkedOnMovies(Person person) {
         String SQL = "SELECT film_id FROM worked_on WHERE person_id = " + '\'' + person.getId() + '\'';
@@ -173,11 +130,11 @@ public class PersonDAO implements PersonAccessInterface {
 
             pstmt.setObject(1, person.getId());
 
-            if (person.getProfession().equals("Director")) {
+            if (person.getRole().getValue() == RoleType.DIRECTOR.getValue()) {
                 professionId = 1;
-            } else if (person.getProfession().equals("Writer")) {
+            } else if (person.getRole().getValue() == RoleType.WRITER.getValue()) {
                 professionId = 2;
-            } else if (person.getProfession().equals("Actor")) {
+            } else if (person.getRole().getValue() == RoleType.ACTOR.getValue()) {
                 professionId = 3;
             }
 
@@ -193,21 +150,20 @@ public class PersonDAO implements PersonAccessInterface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //Since person doesnt exist in db we insert first of all into "person" table
-        String SQL2 = "INSERT INTO person(person_id, person_name, birthday, birthplace)"
-                + "VALUES (?,?,?,?) ";
 
+        String SQL9 = "SELECT person_id, person_name, birthday, birthplace FROM person "
+                + "WHERE person_id = ?";
         try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(SQL2)) {
-
+             PreparedStatement pstmt = conn.prepareStatement(SQL9)) {
 
             pstmt.setObject(1, person.getId());
-            pstmt.setString(2, person.getName());
-            pstmt.setDate(3, (Date) person.getBirthday());
-            pstmt.setString(4, person.getBirthplace());
-
             pstmt.execute();
-
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                System.out.println("This 'person' entry already exists");
+            } else {
+                insertCommit(person, movie);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -309,32 +265,32 @@ public class PersonDAO implements PersonAccessInterface {
 
                 temp = new Person(UUID.fromString(rs.getString("person_id")), "placeholder");
                 temp.setProfession(rs.getString("profession_id"));
-                temp.setRole(new Role(rs.getString("role")));
+                temp.setRole(new Role(rs.getString("role"), rs.getInt("profession_id")));
                 persons.add(temp);
             }
 
-            boolean listHasItems = false;
+            boolean listHasItem = false;
             boolean hasLoopBeenEntered = false;
 
             for (int i = 0; i < persons.size(); i++) {
                 hasLoopBeenEntered = true;
                 for (Person readPerson : person) {
-                    if (readPerson.getId().equals(persons.get(i).getId()) && readPerson.getProfession().equals(persons.get(i).getProfession())) {
-                        listHasItems = true;
+                    if (readPerson.getId().equals(persons.get(i).getId()) && readPerson.getRole().getValue() == (persons.get(i).getRole().getValue())) {
+                        listHasItem = true;
                         break;
                     }
                 }
-                if(!listHasItems){
+                if (!listHasItem) {
                     deleteWorkedOn(persons.get(i), movie);
-                    listHasItems = false;
+                    listHasItem = false;
                     continue;
                 }
-                listHasItems = false;
+                listHasItem = false;
             }
             //if (!hasLoopBeenEntered){
-                for (Person p : person) {
-                    insertPerson(p, p.getProfession(), movie);
-                }
+            for (Person p : person) {
+                insertPerson(p, p.getRole().getName(), movie);
+            }
             //}
 
         } catch (
@@ -377,5 +333,50 @@ public class PersonDAO implements PersonAccessInterface {
         }
 
     }*/
+    }
+
+    private void insertCommit(Person person, Movie movie) {
+
+        //Since person doesnt exist in db we insert first of all into "person" table
+        String SQL2 = "INSERT INTO person(person_id, person_name, birthday, birthplace)"
+                + "VALUES (?,?,?,?) ";
+
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL2)) {
+
+
+            pstmt.setObject(1, person.getId());
+            pstmt.setString(2, person.getName());
+            pstmt.setDate(3, (Date) person.getBirthday());
+            pstmt.setString(4, person.getBirthplace());
+
+            pstmt.execute();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        /*//finally we insert into "worked_on".
+        String SQL3 = "INSERT INTO worked_on(person_id, profession_id, film_id, role)"
+                + "VALUES (?,?,?,?) ";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(SQL3)) {
+
+
+            pstmt.setObject(1, person.getId());
+            pstmt.setInt(2, person.getRole().getValue());
+            pstmt.setObject(3, movie.getId());
+            pstmt.setString(4, person.getRole().getName());
+
+            pstmt.execute();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }*/
+
     }
 }

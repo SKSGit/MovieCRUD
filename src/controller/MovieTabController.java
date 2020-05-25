@@ -2,6 +2,8 @@ package controller;
 
 import data.MovieAccessInterface;
 import data.PersonAccessInterface;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,8 +17,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.Movie;
 import model.Person;
+import model.Role;
+import model.RoleType;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -106,11 +111,11 @@ public class MovieTabController {
         Person person;
         while (it.hasNext()) {
             person = (Person) it.next();
-            if (person.getProfession().equals("Director")) {
+            if (person.getRole().getValue() == RoleType.DIRECTOR.getValue()) {
                 directorListView.getItems().add(person);
-            } else if (person.getProfession().equals("Writer")) {
+            } else if (person.getRole().getValue() == RoleType.WRITER.getValue()) {
                 writerListView.getItems().add(person);
-            } else if (person.getProfession().equals("Actor")) {
+            } else if (person.getRole().getValue() == RoleType.ACTOR.getValue()) {
                 castView.getItems().add(person);
             }
         }
@@ -189,7 +194,12 @@ public class MovieTabController {
         TableColumn<Person, String> actor = new TableColumn<>("Actor");
         actor.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<Person, String> role = new TableColumn<>("Role");
-        role.setCellValueFactory(new PropertyValueFactory<>("role"));
+        role.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Person, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Person, String> param) {
+                return new ReadOnlyObjectWrapper(param.getValue().getRole().getName()); //readonly because normal String isn't an observable.
+            }
+        });
         castView.getColumns().add(actor);
         castView.getColumns().add(role);
 

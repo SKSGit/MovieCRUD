@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import model.Movie;
 import model.Person;
 import model.Role;
+import model.RoleType;
 
 import java.util.UUID;
 
@@ -66,20 +67,19 @@ public class AddPersonWindowController {
             System.out.println("Person must have a Role and vice versa");
             return;
         }
-        if (!newPersonField.getText().isEmpty() && (listViewPeople.getSelectionModel().getSelectedItem() != null && !newPersonField.getText().isEmpty()))
-        {
+        if (!newPersonField.getText().isEmpty() && (listViewPeople.getSelectionModel().getSelectedItem() != null && !newPersonField.getText().isEmpty())) {
             System.out.println("You can't assign a Role to both an existing Person and a new Person");
             return;
         }
         if (!newPersonField.getText().isEmpty()) {
             thisPerson = new Person(UUID.randomUUID(), newPersonField.getText());
             determineProfession(thisPerson);
-            thisPerson.setRole(new Role(roleField.getText()));
+            //thisPerson.setRole(new Role(roleField.getText()));
 
-        } else if (listViewPeople.getSelectionModel().getSelectedItem() != null){
+        } else if (listViewPeople.getSelectionModel().getSelectedItem() != null) {
             thisPerson = listViewPeople.getSelectionModel().getSelectedItem();
             determineProfession(thisPerson);
-            thisPerson.setRole(new Role(roleField.getText()));
+            //thisPerson.setRole(new Role(roleField.getText()));
         }
         //daoPerson.insertPerson(thisPerson, thisPerson.getProfession(), thisMovie);
         if (thisMovie != null) {
@@ -89,13 +89,23 @@ public class AddPersonWindowController {
 
     /**
      * Determines persons profession for this movie. Based on which button was pressed to get here from EditMovie.
+     *
      * @param person
      */
     public void determineProfession(Person person) {
         if (roleField.isEditable()) {
-            person.setProfession("Actor");
+            //person.setProfession("Actor");
+            person.setRole(new Role(RoleType.ACTOR.getValue()));
         } else {
-            person.setProfession(roleField.getText());
+            switch (roleField.getText()) {
+                case "Writer":
+                    person.setRole(new Role(roleField.getText(), RoleType.WRITER.getValue()));
+                    break;
+                case "Director":
+                    person.setRole(new Role(roleField.getText(), RoleType.DIRECTOR.getValue()));
+                    break;
+            }
+
         }
     }
 
