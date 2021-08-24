@@ -5,7 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y install postgresql
 # adding: database dump file
 COPY database_backup.sql /tmp/database_backup.sql
-# replace existing file with modified: listen_addresses = '*'
+# replace existing file with modified: listen_addresses = 'localhost'
 COPY postgresql.conf /etc/postgresql/12/main/
 # changing user from root to postgres
 USER postgres
